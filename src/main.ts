@@ -53,3 +53,20 @@ ipcMain.handle('obter-dados-maquina', async () => {
     memoriaRam: `${ramTotalGB} GB`,
   }
 })
+
+// Exercício 2: Calculadora de IMC
+ipcMain.handle('calcular-imc', async (_event, peso: number, altura: number) => {
+  if (!peso || !altura || peso <= 0 || altura <= 0) {
+    throw new Error('Valores de peso ou altura inválidos.')
+  }
+
+  const imc = parseFloat((peso / (altura * altura)).toFixed(2))
+  let classificacao = ''
+
+  if (imc < 18.5) classificacao = 'Abaixo do peso'
+  else if (imc < 25.0) classificacao = 'Peso normal' // Limiar OMS: < 25,0 kg/m2
+  else if (imc < 29.9) classificacao = 'Sobrepeso'
+  else classificacao = 'Obesidade'
+
+  return { imc, classificacao }
+})

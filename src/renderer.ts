@@ -5,6 +5,7 @@ declare global {
     api: {
       ping: () => Promise<string>;
       obterDadosMaquina: () => Promise<{ plataforma: string; processador: string; memoriaRam: string }>;
+      calcularImc: (peso: number, altura: number) => Promise<{ imc: number; classificacao: string }>;
     };
   }
 }
@@ -40,6 +41,23 @@ btnHardware.addEventListener('click', async () => {
   } catch (erro) {
     resHardware.textContent = 'Erro ao consultar dados de hardware.'
     console.error(erro)
+  }
+})
+
+// --- Exercício 2: IMC ---
+const inputPeso = document.getElementById('peso') as HTMLInputElement
+const inputAltura = document.getElementById('altura') as HTMLInputElement
+const btnImc = document.getElementById('btn-imc') as HTMLButtonElement
+const resImc = document.getElementById('res-imc') as HTMLParagraphElement
+
+btnImc.addEventListener('click', async () => {
+  const peso = parseFloat(inputPeso.value)
+  const altura = parseFloat(inputAltura.value)
+  try {
+    const resultado = await window.api.calcularImc(peso, altura)
+    resImc.innerHTML = `Seu IMC é <strong>${resultado.imc}</strong> (${resultado.classificacao})`
+  } catch (erro: unknown) {
+    resImc.textContent = 'Erro: verifique os dados inseridos.'
   }
 })
 
