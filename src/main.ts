@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import path from 'path'
+import os from 'os'
 
 let mainWindow: BrowserWindow | null = null
 
@@ -41,4 +42,14 @@ app.on('window-all-closed', () => {
 // Canal de teste do boilerplate
 ipcMain.handle('canal-ping', async () => {
   return 'pong do Processo Main!'
+})
+
+// Exercício 1: Informações de Hardware
+ipcMain.handle('obter-dados-maquina', async () => {
+  const ramTotalGB = (os.totalmem() / (1024 ** 3)).toFixed(2)
+  return {
+    plataforma: os.platform(),
+    processador: os.cpus()[0].model,
+    memoriaRam: `${ramTotalGB} GB`,
+  }
 })
