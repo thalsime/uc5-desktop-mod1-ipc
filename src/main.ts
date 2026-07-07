@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import path from 'path'
 import os from 'os'
+import fs from 'fs'
 
 let mainWindow: BrowserWindow | null = null
 
@@ -69,4 +70,24 @@ ipcMain.handle('calcular-imc', async (_event, peso: number, altura: number) => {
   else classificacao = 'Obesidade'
 
   return { imc, classificacao }
+})
+
+// Exercício 3: Gravador de Logs
+ipcMain.handle('registrar-log', async (_event, textoLog: string) => {
+  if (!textoLog.trim()) return false
+
+  // NOTA: app.getAppPath() funciona apenas em desenvolvimento.
+  // Em produção (.asar), este diretório é somente leitura.
+  // Para dados persistidos no app instalado, use: app.getPath('userData')
+  const caminhoArquivo = path.join(app.getAppPath(), 'logs.txt')
+  const timestamp = new Date().toISOString()
+  const linhaLog = `[${timestamp}] ${textoLog}\n`
+
+  try {
+    fs.appendFileSync(caminhoArquivo, linhaLog, 'utf-8')
+    return true
+  } catch (erro: unknown) {
+    console.error('Falha ao gravar no arquivo:', erro)
+    return false
+  }
 })

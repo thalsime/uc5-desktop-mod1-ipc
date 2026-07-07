@@ -6,6 +6,7 @@ declare global {
       ping: () => Promise<string>;
       obterDadosMaquina: () => Promise<{ plataforma: string; processador: string; memoriaRam: string }>;
       calcularImc: (peso: number, altura: number) => Promise<{ imc: number; classificacao: string }>;
+      escreverLog: (mensagem: string) => Promise<boolean>;
     };
   }
 }
@@ -58,6 +59,22 @@ btnImc.addEventListener('click', async () => {
     resImc.innerHTML = `Seu IMC é <strong>${resultado.imc}</strong> (${resultado.classificacao})`
   } catch (erro: unknown) {
     resImc.textContent = 'Erro: verifique os dados inseridos.'
+  }
+})
+
+// --- Exercício 3: Gravador de Logs ---
+const campoLog = document.getElementById('campo-log') as HTMLInputElement
+const btnLog = document.getElementById('btn-log') as HTMLButtonElement
+const resLog = document.getElementById('res-log') as HTMLParagraphElement
+
+btnLog.addEventListener('click', async () => {
+  const mensagem = campoLog.value
+  const sucesso = await window.api.escreverLog(mensagem)
+  if (sucesso) {
+    resLog.textContent = 'Mensagem salva com sucesso em logs.txt!'
+    campoLog.value = ''
+  } else {
+    resLog.textContent = 'Escreva algo no campo para salvar.'
   }
 })
 
